@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DEPOTFAM Store Manager</title><link rel="stylesheet" href="style.css"><meta name="robots" content="noindex"></head>
+<body>
+<div id="login" class="login-wrap">
+ <form id="loginForm" class="login-card">
+  <div class="brand"><div class="logo">D</div><div><b>DEPOTFAM Store Manager</b><small>In-house seller management system</small></div></div>
+  <h2>Sign in</h2>
+  <label>Username<input id="u" autocomplete="username" required></label>
+  <label>Password<input id="p" type="password" autocomplete="current-password" required></label>
+  <div id="err" class="err"></div>
+  <button class="btn primary full" type="submit">Sign in</button>
+  <p class="muted small">Internal tool for DEPOTFAM (Shopee KR cross-border seller). Authorized staff and Shopee Open Platform reviewers only.</p>
+ </form>
+</div>
+<div id="app" class="hidden">
+ <aside class="side">
+  <div class="brand"><div class="logo">D</div><div><b>DEPOTFAM</b><small>Store Manager</small></div></div>
+  <nav>
+   <a data-tab="dashboard" class="active">Dashboard</a>
+   <a data-tab="shops">Shops</a>
+   <a data-tab="products">Products</a>
+   <a data-tab="update">Price &amp; Stock Update</a>
+   <a data-tab="orders">Orders</a>
+   <a data-tab="api">API Connection</a>
+  </nav>
+  <div class="side-foot"><span id="who"></span><button id="logout" class="btn ghost sm">Sign out</button></div>
+ </aside>
+ <main>
+  <section id="dashboard" class="tab">
+   <h1>Dashboard</h1>
+   <div class="cards" id="kpis"></div>
+   <div class="panel"><h3>Workflow</h3>
+    <ol class="flow"><li>Source products from Korean suppliers</li><li>Calculate per-market price (fees, FX, SLS shipping)</li><li>Create / update listings on Shopee via Open API</li><li>Sync stock &amp; price daily</li><li>Fulfil orders via Shopee SLS (KR warehouse)</li></ol>
+   </div>
+  </section>
+  <section id="shops" class="tab hidden"><h1>Shops</h1><p class="muted">Shopee cross-border markets operated from Korea (main account: depotfam.kr).</p><table><thead><tr><th>Market</th><th>Shop</th><th>Currency</th><th>Region site</th><th>API authorization</th><th>Listings synced</th></tr></thead><tbody id="shopRows"></tbody></table></section>
+  <section id="products" class="tab hidden"><h1>Products</h1>
+   <div class="toolbar"><input id="q" placeholder="Search name or SKU"><select id="mk"></select><span class="muted small">Prices = indicative list price per market (excl. shipping). Stock = supplier stock snapshot.</span></div>
+   <table><thead><tr><th>SKU</th><th>Product name</th><th>Category</th><th>Size</th><th>Price</th><th>Stock</th><th>Status</th></tr></thead><tbody id="prodRows"></tbody></table></section>
+  <section id="update" class="tab hidden"><h1>Price &amp; Stock Update</h1>
+   <div class="grid2"><form id="upd" class="panel">
+    <h3>Update listing</h3>
+    <label>Product<select id="uSku"></select></label>
+    <label>Market<select id="uMk"></select></label>
+    <div class="row"><label>New price<input id="uPrice" type="number" step="0.01" min="0"></label><label>New stock<input id="uStock" type="number" min="0"></label></div>
+    <p class="muted small">Calls <code>v2.product.update_price</code> and <code>v2.product.update_stock</code> once the shop is authorized. Until then changes are saved locally as a draft.</p>
+    <button class="btn primary" type="submit">Save update</button>
+    <div id="updMsg" class="ok"></div>
+   </form>
+   <div class="panel"><h3>Update log</h3><table><thead><tr><th>Time</th><th>SKU</th><th>Market</th><th>Change</th><th>Result</th></tr></thead><tbody id="logRows"></tbody></table></div></div>
+  </section>
+  <section id="orders" class="tab hidden"><h1>Orders</h1><p class="notice">Sample data — real orders will be loaded via <code>v2.order.get_order_list</code> after shop authorization. Buyer personal data is not stored.</p><table><thead><tr><th>Order SN</th><th>Market</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th></tr></thead><tbody id="orderRows"></tbody></table></section>
+  <section id="api" class="tab hidden"><h1>API Connection</h1>
+   <div class="grid2"><div class="panel"><h3>Shopee Open Platform</h3>
+    <dl class="kv"><dt>App name</dt><dd>DEPOTFAM Store Manager</dd><dt>App type</dt><dd>Seller In House System</dd><dt>Environment</dt><dd>Test (Sandbox)</dd><dt>Test Partner ID</dt><dd>1253971</dd><dt>Live Partner ID</dt><dd class="muted">Pending Go-Live approval</dd><dt>Shop authorization</dt><dd><span class="badge warn">Not connected</span></dd></dl>
+    <button class="btn primary" id="authBtn">Authorize Shop</button>
+    <div id="authMsg" class="muted small"></div>
+   </div>
+   <div class="panel"><h3>APIs used</h3><ul class="api-list"><li><code>v2.shop.get_shop_info</code> – shop profile</li><li><code>v2.product.get_item_list</code> / <code>get_item_base_info</code> – listings</li><li><code>v2.product.add_item</code> – new listings</li><li><code>v2.product.update_price</code> – price sync</li><li><code>v2.product.update_stock</code> – stock sync</li><li><code>v2.order.get_order_list</code> / <code>get_order_detail</code> – orders</li><li><code>v2.logistics.*</code> – SLS shipping documents</li></ul><p class="muted small">Buyer personal information is not requested; cross-border parcels ship to the Shopee KR warehouse.</p></div></div>
+  </section>
+ </main>
+</div>
+<script src="app.js"></script></body></html>
