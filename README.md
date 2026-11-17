@@ -1,0 +1,1 @@
+# depotfam-store-manager
